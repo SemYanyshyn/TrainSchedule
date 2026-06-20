@@ -246,3 +246,27 @@ npm run build
 - Configure the frontend `VITE_API_URL` to point to the deployed backend API URL.
 - Keep Supabase Auth disabled for this app; authentication is custom JWT + bcrypt.
 
+## GitHub Pages Frontend Deployment
+
+GitHub Pages hosts only the frontend static build from `frontend/dist`. The Express backend must be deployed separately, for example on Render, Railway, or Koyeb.
+
+In GitHub repository settings, add this repository variable:
+
+```text
+VITE_API_URL=https://your-deployed-backend-url/api
+```
+
+Then enable GitHub Pages:
+
+1. Open repository Settings.
+2. Go to Pages.
+3. Set Source to GitHub Actions.
+4. Push to the `main` branch.
+
+After each push to `main`, GitHub Actions builds the frontend with Node.js 22 and deploys it to GitHub Pages.
+
+The frontend Vite base path is configured for this repository:
+
+```text
+/TrainSchedule/
+```

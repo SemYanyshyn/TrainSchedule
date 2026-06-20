@@ -1,0 +1,77 @@
+body {
+  min-height: 100vh;
+  margin: 0;
+  background:
+    radial-gradient(circle at top left, rgba(37, 99, 235, 0.16), transparent 32rem),
+    #0f172a;
+  color: #e5e7eb;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.app-shell {
+  color: #e5e7eb;
+}
+
+.app-shell .text-muted,
+.app-shell .text-secondary {
+  color: #94a3b8 !important;
+}
+
+.app-card {
+  background-color: #111827;
+  border-color: #334155 !important;
+  color: #e5e7eb;
+}
+
+.form-control,
+.form-select {
+  background-color: #0f172a;
+  border-color: #475569;
+  color: #f8fafc;
+}
+
+.form-control:focus,
+.form-select:focus {
+  background-color: #111827;
+  border-color: #60a5fa;
+  box-shadow: 0 0 0 0.25rem rgba(96, 165, 250, 0.2);
+  color: #f8fafc;
+}
+
+.form-control::placeholder {
+  color: #94a3b8;
+}
+
+.form-select option {
+  background-color: #0f172a;
+  color: #f8fafc;
+}
+
+.form-control:-webkit-autofill,
+.form-control:-webkit-autofill:hover,
+.form-control:-webkit-autofill:focus {
+  -webkit-text-fill-color: #f8fafc;
+  box-shadow: 0 0 0 1000px #0f172a inset;
+  transition: background-color 9999s ease-in-out 0s;
+}
+
+.app-table {
+  --bs-table-bg: #111827;
+  --bs-table-striped-bg: #162033;
+  --bs-table-hover-bg: #1e293b;
+  border-color: #334155;
+}
+
+.app-table th {
+  color: #cbd5e1;
+}
+
+.alert-dark-surface {
+  background-color: #111827;
+  border-color: #334155;
+  color: #e5e7eb;
+}
+

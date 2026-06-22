@@ -1,4 +1,13 @@
-import type { Train } from "../types";
+import { Button } from "@/components/ui/button";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import type { Train } from "@/types";
 
 type TrainTableProps = {
   canManage: boolean;
@@ -14,54 +23,61 @@ const formatDateTime = (value: string): string => {
   }).format(new Date(value));
 };
 
-function TrainTable({ canManage, trains, onDelete, onEdit }: TrainTableProps) {
+function TrainTable({ canManage, onDelete, onEdit, trains }: TrainTableProps) {
   return (
-    <div className="table-responsive rounded border border-secondary">
-      <table className="table table-dark table-striped table-hover align-middle app-table mb-0">
-        <thead>
-          <tr>
-            <th scope="col">Train</th>
-            <th scope="col">From</th>
-            <th scope="col">To</th>
-            <th scope="col">Station</th>
-            <th scope="col">Departure</th>
-            <th scope="col">Arrival</th>
-            {canManage && <th scope="col">Actions</th>}
-          </tr>
-        </thead>
-        <tbody>
+    <div className="overflow-hidden rounded-lg border border-slate-700">
+      <Table>
+        <TableHeader className="bg-slate-950/70">
+          <TableRow className="border-slate-700 hover:bg-slate-950/70">
+            <TableHead>Train</TableHead>
+            <TableHead>From</TableHead>
+            <TableHead>To</TableHead>
+            <TableHead>Station</TableHead>
+            <TableHead>Departure</TableHead>
+            <TableHead>Arrival</TableHead>
+            {canManage && <TableHead>Actions</TableHead>}
+          </TableRow>
+        </TableHeader>
+        <TableBody>
           {trains.map((train) => (
-            <tr key={train.id}>
-              <td>{train.trainNumber}</td>
-              <td>{train.fromStation}</td>
-              <td>{train.toStation}</td>
-              <td>{train.station}</td>
-              <td>{formatDateTime(train.departureTime)}</td>
-              <td>{formatDateTime(train.arrivalTime)}</td>
+            <TableRow
+              className="border-slate-800 hover:bg-slate-800/70"
+              key={train.id}
+            >
+              <TableCell className="font-medium text-white">
+                {train.trainNumber}
+              </TableCell>
+              <TableCell>{train.fromStation}</TableCell>
+              <TableCell>{train.toStation}</TableCell>
+              <TableCell>{train.station}</TableCell>
+              <TableCell>{formatDateTime(train.departureTime)}</TableCell>
+              <TableCell>{formatDateTime(train.arrivalTime)}</TableCell>
               {canManage && (
-                <td>
-                  <div className="d-flex gap-2">
-                    <button
-                      className="btn btn-outline-info btn-sm"
+                <TableCell>
+                  <div className="flex flex-wrap gap-2">
+                    <Button
                       onClick={() => onEdit(train)}
+                      size="sm"
                       type="button"
+                      variant="outline"
                     >
                       Edit
-                    </button>
-                    <button
-                      className="btn btn-outline-danger btn-sm"
+                    </Button>
+                    <Button
                       onClick={() => onDelete(train)}
+                      size="sm"
                       type="button"
+                      variant="destructive"
                     >
                       Delete
-                    </button>
+                    </Button>
                   </div>
-                </td>
+                </TableCell>
               )}
-            </tr>
+            </TableRow>
           ))}
-        </tbody>
-      </table>
+        </TableBody>
+      </Table>
     </div>
   );
 }

@@ -16,4 +16,3 @@ router.put("/:id", authenticate, updateTrain);
 router.delete("/:id", authenticate, deleteTrain);
 
 export default router;
-

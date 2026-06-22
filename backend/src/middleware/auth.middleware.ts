@@ -25,4 +25,3 @@ export const authenticate: RequestHandler = (req, res, next) => {
     res.status(401).json({ message: "Unauthorized" });
   }
 };
-

@@ -31,4 +31,3 @@ export type TrainPayload = {
   departureTime: string;
   arrivalTime: string;
 };
-

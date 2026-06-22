@@ -1,0 +1,4 @@
+#!/usr/bin/env sh
+corepack pnpm lint
+corepack pnpm typecheck
+corepack pnpm build

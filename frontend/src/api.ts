@@ -62,10 +62,7 @@ export const updateTrain = async (
   return (await response.json()) as Train;
 };
 
-export const deleteTrain = async (
-  token: string,
-  id: number,
-): Promise<void> => {
+export const deleteTrain = async (token: string, id: number): Promise<void> => {
   const response = await fetch(`${API_URL}/trains/${id}`, {
     method: "DELETE",
     headers: {
@@ -77,7 +74,6 @@ export const deleteTrain = async (
     throw new Error(await getErrorMessage(response));
   }
 };
-
 
 export const registerUser = async (
   email: string,

@@ -46,4 +46,3 @@ export const verifyAuthToken = (token: string): AuthUserPayload => {
     role: payload.role,
   };
 };
-

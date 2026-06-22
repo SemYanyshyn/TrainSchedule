@@ -1,6 +1,23 @@
 import { FormEvent, useEffect, useState } from "react";
 
-import type { Train, TrainPayload } from "../types";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import type { Train, TrainPayload } from "@/types";
 
 const directionStationOptions = ["Kyiv", "Lviv", "Odesa", "Kharkiv", "Dnipro"];
 
@@ -96,34 +113,36 @@ function TrainForm({
   };
 
   return (
-    <div className="card app-card border-secondary shadow mb-4">
-      <div className="card-body">
-        <div className="d-flex flex-column flex-md-row justify-content-between gap-2 mb-3">
-          <h2 className="h4 mb-0 text-light">
-            {editingTrain ? "Edit Train" : "Create Train"}
-          </h2>
-          {editingTrain && (
-            <button
-              className="btn btn-outline-light btn-sm"
-              onClick={() => {
-                onCancelEdit();
-                setValues(emptyFormValues);
-              }}
-              type="button"
-            >
-              Cancel edit
-            </button>
-          )}
+    <Card className="border-slate-700 bg-slate-900/80 shadow-xl shadow-black/20">
+      <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <CardTitle>{editingTrain ? "Edit Train" : "Create Train"}</CardTitle>
+          <CardDescription>
+            {editingTrain
+              ? "Update the selected train record."
+              : "Add a new train record to the schedule."}
+          </CardDescription>
         </div>
+        {editingTrain && (
+          <Button
+            onClick={() => {
+              onCancelEdit();
+              setValues(emptyFormValues);
+            }}
+            type="button"
+            variant="outline"
+          >
+            Cancel edit
+          </Button>
+        )}
+      </CardHeader>
 
-        <form onSubmit={handleSubmit}>
-          <div className="row g-3">
-            <div className="col-12 col-md-4">
-              <label className="form-label text-light" htmlFor="trainNumber">
-                Train number
-              </label>
-              <input
-                className="form-control"
+      <CardContent>
+        <form className="space-y-5" onSubmit={handleSubmit}>
+          <div className="grid gap-4 md:grid-cols-3">
+            <div className="space-y-2">
+              <Label htmlFor="trainNumber">Train number</Label>
+              <Input
                 id="trainNumber"
                 onChange={(event) =>
                   updateField("trainNumber", event.target.value)
@@ -133,73 +152,69 @@ function TrainForm({
               />
             </div>
 
-            <div className="col-12 col-md-4">
-              <label className="form-label text-light" htmlFor="fromStation">
-                From
-              </label>
-              <select
-                className="form-select"
-                id="fromStation"
-                onChange={(event) =>
-                  updateField("fromStation", event.target.value)
-                }
+            <div className="space-y-2">
+              <Label>From</Label>
+              <Select
+                onValueChange={(value) => updateField("fromStation", value)}
                 required
                 value={values.fromStation}
               >
-                {directionStationOptions.map((station) => (
-                  <option key={station} value={station}>
-                    {station}
-                  </option>
-                ))}
-              </select>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select origin" />
+                </SelectTrigger>
+                <SelectContent>
+                  {directionStationOptions.map((station) => (
+                    <SelectItem key={station} value={station}>
+                      {station}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
-            <div className="col-12 col-md-4">
-              <label className="form-label text-light" htmlFor="toStation">
-                To
-              </label>
-              <select
-                className="form-select"
-                id="toStation"
-                onChange={(event) =>
-                  updateField("toStation", event.target.value)
-                }
+            <div className="space-y-2">
+              <Label>To</Label>
+              <Select
+                onValueChange={(value) => updateField("toStation", value)}
                 required
                 value={values.toStation}
               >
-                {directionStationOptions.map((station) => (
-                  <option key={station} value={station}>
-                    {station}
-                  </option>
-                ))}
-              </select>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select destination" />
+                </SelectTrigger>
+                <SelectContent>
+                  {directionStationOptions.map((station) => (
+                    <SelectItem key={station} value={station}>
+                      {station}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
-            <div className="col-12 col-md-4">
-              <label className="form-label text-light" htmlFor="station">
-                Station
-              </label>
-              <select
-                className="form-select"
-                id="station"
-                onChange={(event) => updateField("station", event.target.value)}
+            <div className="space-y-2">
+              <Label>Station</Label>
+              <Select
+                onValueChange={(value) => updateField("station", value)}
                 required
                 value={values.station}
               >
-                {stationOptions.map((station) => (
-                  <option key={station} value={station}>
-                    {station}
-                  </option>
-                ))}
-              </select>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select station" />
+                </SelectTrigger>
+                <SelectContent>
+                  {stationOptions.map((station) => (
+                    <SelectItem key={station} value={station}>
+                      {station}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
-            <div className="col-12 col-md-4">
-              <label className="form-label text-light" htmlFor="departureTime">
-                Departure time
-              </label>
-              <input
-                className="form-control"
+            <div className="space-y-2">
+              <Label htmlFor="departureTime">Departure time</Label>
+              <Input
                 id="departureTime"
                 onChange={(event) =>
                   updateField("departureTime", event.target.value)
@@ -210,12 +225,9 @@ function TrainForm({
               />
             </div>
 
-            <div className="col-12 col-md-4">
-              <label className="form-label text-light" htmlFor="arrivalTime">
-                Arrival time
-              </label>
-              <input
-                className="form-control"
+            <div className="space-y-2">
+              <Label htmlFor="arrivalTime">Arrival time</Label>
+              <Input
                 id="arrivalTime"
                 onChange={(event) =>
                   updateField("arrivalTime", event.target.value)
@@ -225,24 +237,18 @@ function TrainForm({
                 value={values.arrivalTime}
               />
             </div>
-
-            <div className="col-12 d-flex gap-2">
-              <button
-                className="btn btn-success"
-                disabled={isSubmitting}
-                type="submit"
-              >
-                {isSubmitting
-                  ? "Saving..."
-                  : editingTrain
-                    ? "Update train"
-                    : "Create train"}
-              </button>
-            </div>
           </div>
+
+          <Button disabled={isSubmitting} type="submit">
+            {isSubmitting
+              ? "Saving..."
+              : editingTrain
+                ? "Update train"
+                : "Create train"}
+          </Button>
         </form>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 }
 

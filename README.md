@@ -13,18 +13,18 @@ The application allows guests to view train schedules and authenticated users to
 - Authenticated train create, edit, and delete.
 - Train schedule table ordered by departure time.
 - PostgreSQL data storage through Prisma ORM.
-- Dark Bootstrap UI.
+- Dark Tailwind CSS + shadcn/ui interface.
 
 ## Tech Stack
 
 - Frontend: React + Vite + TypeScript
-- UI: Bootstrap
+- UI: Tailwind CSS + shadcn/ui
 - Backend: Node.js + Express + TypeScript
 - Database: Supabase PostgreSQL
 - ORM: Prisma
 - Auth: JWT + bcrypt
 
-Supabase is used only as a PostgreSQL database. Supabase Auth and `@supabase/supabase-js` are not used.
+Supabase is used only as a PostgreSQL database. Supabase Auth and `@supabase/supabase-js` are not used. Bootstrap is no longer used; the frontend UI is built with Tailwind CSS and shadcn/ui components.
 
 ## Project Structure
 
@@ -44,6 +44,8 @@ train-schedule-app/
   frontend/
     src/
       components/
+        ui/
+      lib/
     .env.example
     package.json
     tsconfig.json
@@ -70,6 +72,34 @@ Frontend `frontend/.env`:
 VITE_API_URL=http://localhost:5001/api
 ```
 
+## Package Manager
+
+This project uses pnpm workspaces.
+
+Install all dependencies from the project root:
+
+```bash
+pnpm install
+```
+
+Development:
+
+```bash
+pnpm dev:backend
+pnpm dev:frontend
+```
+
+Quality checks:
+
+```bash
+pnpm lint
+pnpm format:check
+pnpm typecheck
+pnpm build
+```
+
+Husky runs pre-commit and pre-push checks automatically. Pre-commit runs `lint-staged`; pre-push runs lint, typecheck, and build.
+
 ## Supabase PostgreSQL Setup
 
 1. Create a new project in Supabase.
@@ -94,11 +124,10 @@ Prisma Studio and migrations can fail if:
 ## Backend Setup
 
 ```bash
-cd backend
-npm install
-npm run prisma:generate
-npm run prisma:migrate -- --name init
-npm run dev
+pnpm install
+pnpm --filter train-schedule-backend prisma:generate
+pnpm --filter train-schedule-backend prisma:migrate -- --name init
+pnpm dev:backend
 ```
 
 Backend runs on:
@@ -116,9 +145,8 @@ GET http://localhost:5001/api/health
 ## Frontend Setup
 
 ```bash
-cd frontend
-npm install
-npm run dev
+pnpm install
+pnpm dev:frontend
 ```
 
 Frontend runs on:
@@ -132,9 +160,9 @@ http://localhost:5173
 Run these from `backend/`:
 
 ```bash
-npm run prisma:generate
-npm run prisma:migrate -- --name init
-npm run prisma:studio
+pnpm prisma:generate
+pnpm prisma:migrate -- --name init
+pnpm prisma:studio
 ```
 
 Prisma Studio opens at:
@@ -180,15 +208,13 @@ Authorization: Bearer YOUR_TOKEN
 1. Start the backend:
 
 ```bash
-cd backend
-npm run dev
+pnpm dev:backend
 ```
 
 2. Start the frontend:
 
 ```bash
-cd frontend
-npm run dev
+pnpm dev:frontend
 ```
 
 3. Open:
@@ -226,34 +252,32 @@ Authenticated user test:
 Backend:
 
 ```bash
-cd backend
-npm run build
+pnpm build:backend
 ```
 
 Frontend:
 
 ```bash
-cd frontend
-npm run build
+pnpm build:frontend
 ```
 
 ## Deployment Notes
 
 - Set real environment variables in the deployment platform.
 - Never expose real Supabase URLs, database passwords, or JWT secrets in the repository.
-- Run `npm run prisma:generate` during backend build/deploy.
+- Run `pnpm --filter train-schedule-backend prisma:generate` during backend build/deploy.
 - Apply Prisma migrations before using the deployed backend.
 - Configure the frontend `VITE_API_URL` to point to the deployed backend API URL.
 - Keep Supabase Auth disabled for this app; authentication is custom JWT + bcrypt.
 
 ## GitHub Pages Frontend Deployment
 
-GitHub Pages hosts only the frontend static build from `frontend/dist`. The Express backend must be deployed separately, for example on Render, Railway, or Koyeb.
+GitHub Pages hosts only the frontend static build from `frontend/dist`. The Express backend must be deployed separately, for example on Render.
 
 In GitHub repository settings, add this repository variable:
 
 ```text
-VITE_API_URL=https://your-deployed-backend-url/api
+VITE_API_URL=https://your-render-backend-url/api
 ```
 
 Then enable GitHub Pages:
@@ -270,3 +294,31 @@ The frontend Vite base path is configured for this repository:
 ```text
 /TrainSchedule/
 ```
+
+## Render Backend Deployment
+
+Use the repository root as the Render service root directory because this project is a pnpm monorepo.
+
+Recommended Render settings:
+
+```text
+Root Directory:
+leave empty or use repository root
+
+Build Command:
+corepack enable && pnpm install --frozen-lockfile && pnpm --filter train-schedule-backend prisma:generate && pnpm --filter train-schedule-backend build
+
+Start Command:
+pnpm --filter train-schedule-backend start
+```
+
+Set these environment variables on Render:
+
+```text
+DATABASE_URL=your_supabase_pooled_connection_string
+DIRECT_URL=your_supabase_direct_connection_string
+JWT_SECRET=your_jwt_secret
+NODE_VERSION=22
+```
+
+Do not set Render root directory to `backend`; Render needs access to the root `pnpm-lock.yaml` and `pnpm-workspace.yaml`.

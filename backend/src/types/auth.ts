@@ -10,4 +10,3 @@ export type AuthUserPayload = {
 export type AuthenticatedRequest = Request & {
   user?: AuthUserPayload;
 };
-

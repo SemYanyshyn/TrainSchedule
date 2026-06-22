@@ -7,10 +7,21 @@ import {
   loginUser,
   registerUser,
   updateTrain,
-} from "./api";
-import TrainForm from "./components/TrainForm";
-import TrainTable from "./components/TrainTable";
-import type { AuthUser, Train, TrainPayload } from "./types";
+} from "@/api";
+import AuthForm from "@/components/AuthForm";
+import Navbar from "@/components/Navbar";
+import TrainForm from "@/components/TrainForm";
+import TrainTable from "@/components/TrainTable";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import type { AuthUser, Train, TrainPayload } from "@/types";
 
 const TOKEN_STORAGE_KEY = "train_schedule_token";
 const USER_STORAGE_KEY = "train_schedule_user";
@@ -180,119 +191,24 @@ function App() {
   const canManageTrains = Boolean(user && token);
 
   return (
-    <main className="container app-shell py-4">
-      <div className="app-card d-flex flex-column flex-md-row justify-content-between gap-3 mb-4 rounded-3 border p-4 shadow">
-        <div>
-          <h1 className="mb-1 text-light">Train Schedule Application</h1>
-          <p className="text-muted mb-0">
-            View train schedules and manage records after login.
-          </p>
-        </div>
-
-        <div className="text-md-end">
-          {user ? (
-            <div>
-              <div className="alert alert-success border-success py-2 mb-2" role="status">
-                Authenticated as <strong>{user.email}</strong> ({user.role})
-              </div>
-              <button className="btn btn-outline-danger" onClick={handleLogout}>
-                Logout
-              </button>
-            </div>
-          ) : (
-            <div className="alert alert-dark-surface py-2 mb-0" role="status">
-              You are viewing as a guest.
-            </div>
-          )}
-        </div>
-      </div>
+    <main className="mx-auto flex min-h-screen w-full max-w-7xl flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8">
+      <Navbar onLogout={handleLogout} user={user} />
 
       {!user && (
-        <section className="mb-4">
-          <div className="card app-card border-secondary shadow">
-            <div className="card-body">
-              <div className="d-flex gap-2 mb-3">
-                <button
-                  className={`btn ${
-                    authMode === "login" ? "btn-primary" : "btn-outline-primary"
-                  }`}
-                  onClick={() => {
-                    setAuthMode("login");
-                    setAuthError(null);
-                  }}
-                  type="button"
-                >
-                  Login
-                </button>
-                <button
-                  className={`btn ${
-                    authMode === "register"
-                      ? "btn-primary"
-                      : "btn-outline-primary"
-                  }`}
-                  onClick={() => {
-                    setAuthMode("register");
-                    setAuthError(null);
-                  }}
-                  type="button"
-                >
-                  Register
-                </button>
-              </div>
-
-              <form onSubmit={handleAuthSubmit}>
-                <div className="row g-3 align-items-end">
-                  <div className="col-12 col-md-5">
-                    <label className="form-label text-light" htmlFor="email">
-                      Email
-                    </label>
-                    <input
-                      className="form-control"
-                      id="email"
-                      onChange={(event) => setEmail(event.target.value)}
-                      required
-                      type="email"
-                      value={email}
-                    />
-                  </div>
-                  <div className="col-12 col-md-5">
-                    <label className="form-label text-light" htmlFor="password">
-                      Password
-                    </label>
-                    <input
-                      className="form-control"
-                      id="password"
-                      minLength={1}
-                      onChange={(event) => setPassword(event.target.value)}
-                      required
-                      type="password"
-                      value={password}
-                    />
-                  </div>
-                  <div className="col-12 col-md-2 d-grid">
-                    <button
-                      className="btn btn-success"
-                      disabled={isSubmittingAuth}
-                      type="submit"
-                    >
-                      {isSubmittingAuth
-                        ? "Please wait..."
-                        : authMode === "login"
-                          ? "Login"
-                          : "Register"}
-                    </button>
-                  </div>
-                </div>
-
-                {authError && (
-                  <div className="alert alert-danger border-danger mt-3 mb-0" role="alert">
-                    {authError}
-                  </div>
-                )}
-              </form>
-            </div>
-          </div>
-        </section>
+        <AuthForm
+          authError={authError}
+          authMode={authMode}
+          email={email}
+          isSubmitting={isSubmittingAuth}
+          onEmailChange={setEmail}
+          onModeChange={(mode) => {
+            setAuthMode(mode);
+            setAuthError(null);
+          }}
+          onPasswordChange={setPassword}
+          onSubmit={handleAuthSubmit}
+          password={password}
+        />
       )}
 
       {canManageTrains ? (
@@ -303,53 +219,59 @@ function App() {
           onSubmit={handleTrainSubmit}
         />
       ) : (
-        <div className="alert alert-dark-surface border-info" role="status">
-          You are viewing as a guest. Log in to manage train records.
-        </div>
+        <Alert variant="info">
+          <AlertDescription>
+            You are viewing as a guest. Log in to manage train records.
+          </AlertDescription>
+        </Alert>
       )}
 
       {trainActionSuccess && (
-        <div className="alert alert-success border-success" role="status">
-          {trainActionSuccess}
-        </div>
+        <Alert variant="success">
+          <AlertDescription>{trainActionSuccess}</AlertDescription>
+        </Alert>
       )}
 
       {trainActionError && (
-        <div className="alert alert-danger border-danger" role="alert">
-          {trainActionError}
-        </div>
+        <Alert variant="destructive">
+          <AlertDescription>{trainActionError}</AlertDescription>
+        </Alert>
       )}
 
-      <section className="card app-card border-secondary shadow">
-        <div className="card-body">
-          <div className="d-flex justify-content-between align-items-center mb-3">
-            <h2 className="h4 mb-0 text-light">Train Schedule</h2>
-            <button
-              className="btn btn-outline-light btn-sm"
-              disabled={isLoadingTrains}
-              onClick={() => void loadTrains()}
-              type="button"
-            >
-              Refresh
-            </button>
+      <Card className="border-slate-700 bg-slate-900/80 shadow-xl shadow-black/20">
+        <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <CardTitle>Train Schedule</CardTitle>
+            <CardDescription>
+              Public train list ordered by departure time.
+            </CardDescription>
           </div>
-
+          <Button
+            disabled={isLoadingTrains}
+            onClick={() => void loadTrains()}
+            type="button"
+            variant="outline"
+          >
+            Refresh
+          </Button>
+        </CardHeader>
+        <CardContent>
           {isLoadingTrains && (
-            <div className="alert alert-dark-surface border-info" role="status">
-              Loading trains...
-            </div>
+            <Alert variant="info">
+              <AlertDescription>Loading trains...</AlertDescription>
+            </Alert>
           )}
 
           {trainsError && (
-            <div className="alert alert-danger border-danger" role="alert">
-              {trainsError}
-            </div>
+            <Alert variant="destructive">
+              <AlertDescription>{trainsError}</AlertDescription>
+            </Alert>
           )}
 
           {!isLoadingTrains && !trainsError && trains.length === 0 && (
-            <div className="alert alert-dark-surface mb-0" role="status">
-              No trains found.
-            </div>
+            <Alert>
+              <AlertDescription>No trains found.</AlertDescription>
+            </Alert>
           )}
 
           {!isLoadingTrains && !trainsError && trains.length > 0 && (
@@ -364,8 +286,8 @@ function App() {
               trains={trains}
             />
           )}
-        </div>
-      </section>
+        </CardContent>
+      </Card>
     </main>
   );
 }

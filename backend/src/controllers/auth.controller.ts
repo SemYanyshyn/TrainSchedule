@@ -132,4 +132,3 @@ export const getMe: RequestHandler = (req, res) => {
 
   res.json({ user });
 };
-

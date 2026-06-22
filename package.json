@@ -1,0 +1,43 @@
+{
+  "name": "train-schedule-app",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@9.15.4",
+  "scripts": {
+    "dev": "corepack pnpm -r --parallel --filter train-schedule-backend --filter train-schedule-frontend dev",
+    "dev:backend": "corepack pnpm --filter train-schedule-backend dev",
+    "dev:frontend": "corepack pnpm --filter train-schedule-frontend dev",
+    "build": "corepack pnpm -r --filter train-schedule-backend --filter train-schedule-frontend build",
+    "build:backend": "corepack pnpm --filter train-schedule-backend build",
+    "build:frontend": "corepack pnpm --filter train-schedule-frontend build",
+    "lint": "corepack pnpm -r --filter train-schedule-backend --filter train-schedule-frontend lint",
+    "lint:fix": "corepack pnpm -r --filter train-schedule-backend --filter train-schedule-frontend lint:fix",
+    "format": "prettier . --write",
+    "format:check": "prettier . --check",
+    "typecheck": "corepack pnpm -r --filter train-schedule-backend --filter train-schedule-frontend typecheck",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,css}": [
+      "prettier --write"
+    ]
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.4",
+    "eslint": "^9.39.4",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.3",
+    "globals": "^17.6.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.0.8",
+    "prettier": "^3.8.4",
+    "typescript-eslint": "^8.61.1"
+  }
+}
